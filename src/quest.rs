@@ -1,7 +1,7 @@
 pub mod goal;
 
 pub struct Quest {
-    goal: std::Box<goal::Goal>
+    goal: Box<dyn goal::Goal>
 }
 
 impl ToString for Quest {
@@ -11,7 +11,7 @@ impl ToString for Quest {
 }
 
 impl Quest {
-    pub fn new(goal: goal::Goal) -> Quest {
+    pub fn new(goal: Box<dyn goal::Goal>) -> Quest {
         Quest{goal}
     }
 }

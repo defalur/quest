@@ -1,3 +1,7 @@
+use crate::item;
+use crate::actor;
+use crate::container;
+
 pub enum GoalType {
     FETCH,//fetch an item
     DELIVER,//deliver an item to an npc
@@ -23,17 +27,17 @@ impl ToString for GoalType {
 
 pub trait Goal: ToString {
     fn get_type(&self) -> GoalType;
-    fn actors(&self) -> std::Vec<std::Box<Actor>>;
+    fn actors(&self) -> Vec<Box<actor::Actor>>;
 }
 
 pub struct FetchGoal {
-    pub item: Item,
-    pub owner: std::Box<Container>//container can be a mob, npc or chest
+    pub item: item::Item,
+    pub owner: Box<container::Container>//container can be a mob, npc or chest
 }
 
 impl ToString for FetchGoal {
     fn to_string(&self) -> String {
-        "Fetch".to_string() + item.to_string() + " from " + owner.to_string()
+        "Fetch".to_string() + &self.item.to_string() + " from " + &self.owner.to_string()
     }
 }
 
@@ -42,7 +46,7 @@ impl FetchGoal {
         GoalType::FETCH
     }
 
-    fn actors(&self) -> std::Vec<std::Box<Actor>> {
-        vec![owner]
-    }
+    //fn actors(&self) -> Vec<Box<actor::Actor>> {
+    //    vec![self.owner]
+    //}
 }
