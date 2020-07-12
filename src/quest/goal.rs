@@ -27,12 +27,12 @@ impl ToString for GoalType {
 
 pub trait Goal: ToString {
     fn get_type(&self) -> GoalType;
-    fn actors(&self) -> Vec<Box<actor::Actor>>;
+    fn actors(&self) -> Vec<Box<dyn actor::Actor>>;
 }
 
 pub struct FetchGoal {
     pub item: item::Item,
-    pub owner: Box<container::Container>//container can be a mob, npc or chest
+    pub owner: Box<dyn container::Container>//container can be a mob, npc or chest
 }
 
 impl ToString for FetchGoal {

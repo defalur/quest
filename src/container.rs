@@ -1,23 +1,13 @@
 use crate::item;
 
-struct ItemSlot {
+pub struct ItemSlot {
     item: item::Item,
     quantity: u32
 }
 
 //use a map
-pub struct Container {
-    items: Vec<ItemSlot>
-}
-
-impl Container {
-    pub fn new() -> Container {
-        Container{items: Vec::new()}
-    }
-}
-
-impl ToString for Container {
-    fn to_string(&self) -> String {
-        "Container".to_string()
-    }
+pub trait Container: ToString {
+    fn get_items(&self) -> Vec<ItemSlot>;
+    fn add_item(&self, item: item::Item);
+    fn get_item(&self, index: usize) -> item::Item;
 }
