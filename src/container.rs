@@ -1,3 +1,5 @@
+pub mod container;
+
 use crate::item;
 
 pub struct ItemSlot {

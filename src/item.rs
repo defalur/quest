@@ -1,3 +1,5 @@
+pub mod item;
+
 //only a struct for now, might get stats and other things
 pub struct Item
 {
