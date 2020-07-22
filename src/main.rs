@@ -1,5 +1,6 @@
 mod quest;
 mod quest_data;
+mod lang;
 
 use crate::quest::goal_factory;
 
