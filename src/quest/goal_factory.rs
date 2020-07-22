@@ -1,56 +1,53 @@
 use crate::quest::goal;
 use crate::quest;
 
-use crate::item;
-use crate::actor;
-use crate::container;
-use crate::mob;
+use crate::quest_data;
 
 pub struct GoalFactory {
     goal_type: goal::GoalType,
-    target_actor: Box<dyn actor::Actor>,
-    item: item::Item,
-    quantity: usize,
-    mob: mob::Mob,
-    container: Box<dyn container::Container>
+    target_actor: quest_data::QData,
+    target_object: quest_data::QData,//mob or item
+    container: quest_data::QData
 }
 
 impl GoalFactory {
-    fn new(goal_type: goal::GoalType) -> GoalFactory {
-        GoalFactory{goal_type, actors: Vec::new()}
+    pub fn new(goal_type: goal::GoalType) -> GoalFactory {
+        GoalFactory{goal_type, target_actor: quest_data::QData::new_actor("NULL_ACTOR"),
+        target_object: quest_data::QData::new_item("NULL_ITEM"),
+        container: quest_data::QData::new_container("NULL_CONTAINER")}
     }
 
-    fn with_mob(&self, mob: mob::Mob, count: usize) -> &GoalFactory {
-        self.mob = mob;
-        self.quantity = count;
+    pub fn with_mob(mut self, name: &str, count: usize) -> GoalFactory {
+        self.target_object = quest_data::QData::new_mob(name).with_quantity(count);
 
         self
     }
 
-    fn with_item(&self. item: item::Item, count: usize) -> &GoalFactory {
-        self.item = item;
-        self.quantity = count;
+    pub fn with_item(mut self, name: &str, count: usize) -> GoalFactory {
+        self.target_object = quest_data::QData::new_item(name).with_quantity(count);
 
         self
     }
 
-    fn with_container(&self, container: Box<dyn container::Container>) -> &GoalFactory {
-        self.container = container;
+    pub fn with_container(mut self, name: &str) -> GoalFactory {
+        self.container = quest_data::QData::new_container(name);
 
         self
     }
 
-    fn with_target(&self, actor: Box<dyn actor::Actor>) -> &GoalFactory {
-        self.target_actor = actor;
+    pub fn with_target(mut self, name: &str) -> GoalFactory {
+        self.target_actor = quest_data::QData::new_actor(name);
 
         self
     }
 
-    fn build(&self) -> Box<dyn goal::Goal> {
+    pub fn build(&self) -> Box<dyn goal::Goal> {
         match self.goal_type {
-            goal::GoalType::FETCH => Box(goal::FetchGoal{item: self.item, owner: self.container}),
-            goal::GoalType::DELIVER => Box(goal::FetchGoal{item: self.item, owner: self.container}),
-            goal::GoalType::KILL => Box(goal::FetchGoal{item: self.item, owner: self.container})
+            goal::GoalType::FETCH => goal::FetchGoal::new(self.target_object.clone(),
+                                                            self.container.clone()),
+            goal::GoalType::DELIVER => goal::DeliverGoal::new(self.target_object.clone(),
+                                                                self.target_actor.clone()),
+            goal::GoalType::KILL => goal::KillGoal::new(self.target_object.clone())
         }
     }
 }

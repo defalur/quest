@@ -1,6 +1,4 @@
-use crate::item;
-use crate::actor;
-use crate::container;
+use crate::quest_data;
 
 pub enum GoalType {
     FETCH,//fetch an item
@@ -22,31 +20,77 @@ impl ToString for GoalType {
  * Goal: interface
  * g_type()
  * to_string()
- * actors: list of actors, with type of actor
  */
 
 pub trait Goal: ToString {
     fn get_type(&self) -> GoalType;
-    fn actors(&self) -> Vec<Box<dyn actor::Actor>>;
 }
 
 pub struct FetchGoal {
-    pub item: item::Item,
-    pub owner: Box<dyn container::Container>//container can be a mob, npc or chest
+    item: quest_data::QData,
+    owner: quest_data::QData//container can be a mob, npc or chest
 }
 
 impl ToString for FetchGoal {
     fn to_string(&self) -> String {
-        "Fetch".to_string() + &self.item.to_string() + " from " + &self.owner.to_string()
+        "Fetch ".to_string() + &self.item.to_string() + " from " + &self.owner.to_string()
     }
 }
 
 impl FetchGoal {
+    pub fn new(item: quest_data::QData, owner: quest_data::QData) -> Box<dyn Goal> {
+        Box::new(FetchGoal{item, owner})
+    }
+
+}
+
+impl Goal for FetchGoal {
     fn get_type(&self) -> GoalType {
         GoalType::FETCH
     }
+}
 
-    //fn actors(&self) -> Vec<Box<actor::Actor>> {
-    //    vec![self.owner]
-    //}
+pub struct KillGoal {
+    mob: quest_data::QData,
+}
+
+impl ToString for KillGoal {
+    fn to_string(&self) -> String {
+        "Kill ".to_string() + &self.mob.to_string()
+    }
+}
+
+impl KillGoal {
+    pub fn new(mob: quest_data::QData) -> Box<dyn Goal> {
+        Box::new(KillGoal{mob})
+    }
+}
+
+impl Goal for KillGoal {
+    fn get_type(&self) -> GoalType {
+        GoalType::KILL
+    }
+}
+
+pub struct DeliverGoal {
+    item: quest_data::QData,
+    target: quest_data::QData
+}
+
+impl ToString for DeliverGoal {
+    fn to_string(&self) -> String {
+        "Deliver ".to_string() + &self.item.to_string() + " to " + &self.target.to_string()
+    }
+}
+
+impl DeliverGoal {
+    pub fn new(item: quest_data::QData, target: quest_data::QData) -> Box<dyn Goal> {
+        Box::new(DeliverGoal{item, target})
+    }
+}
+
+impl Goal for DeliverGoal {
+    fn get_type(&self) -> GoalType {
+        GoalType::DELIVER
+    }
 }
