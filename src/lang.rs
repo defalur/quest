@@ -1,4 +1,4 @@
-use rand::{Rng, distributions::{Distribution, Standard}};
+use rand::{Rng, distributions::{Distribution, Standard, Normal}};
 
 const CONSONANTS: &'static str = "bcdfghjklmnpqrstvwxz";
 const VOWELS: &'static str = "aeiouy";
@@ -32,19 +32,42 @@ impl Phoneme {
     fn new_rand() -> Phoneme {
         let mut rng = rand::thread_rng();
 
-        let len: usize = rng.gen_range(1, 4);
         let mut data = String::new();
-        for _ in 0..len {
-            let c =
-                if rng.gen::<bool>() {//generate vowel
-                    let idx = rng.gen_range(0, VOWELS.len());
-                    VOWELS.chars().nth(idx).unwrap() as char
-                }
-                else { //generate consonant
-                    let idx = rng.gen_range(0, CONSONANTS.len());
-                    CONSONANTS.chars().nth(idx).unwrap() as char
-                };
-            data.push(c);
+        //structures of phonemes: vc, cv, cvc, v
+        let structure = rng.gen_range(0, 4);
+        match structure {
+            0 => {
+                let idx = rng.gen_range(0, VOWELS.len());
+                let v = VOWELS.chars().nth(idx).unwrap() as char;
+                let idx = rng.gen_range(0, CONSONANTS.len());
+                let c = CONSONANTS.chars().nth(idx).unwrap() as char;
+                data.push(v);
+                data.push(c);
+            },//vc
+            1 => {//cv
+                let idx = rng.gen_range(0, VOWELS.len());
+                let v = VOWELS.chars().nth(idx).unwrap() as char;
+                let idx = rng.gen_range(0, CONSONANTS.len());
+                let c = CONSONANTS.chars().nth(idx).unwrap() as char;
+                data.push(c);
+                data.push(v);
+            },
+            2 => {
+                let idx = rng.gen_range(0, VOWELS.len());
+                let v = VOWELS.chars().nth(idx).unwrap() as char;
+                let idx = rng.gen_range(0, CONSONANTS.len());
+                let c = CONSONANTS.chars().nth(idx).unwrap() as char;
+                let idx = rng.gen_range(0, CONSONANTS.len());
+                let c2 = CONSONANTS.chars().nth(idx).unwrap() as char;
+                data.push(c);
+                data.push(v);
+                data.push(c2);
+            },//cvc
+            _ => {
+                let idx = rng.gen_range(0, VOWELS.len());
+                let v = VOWELS.chars().nth(idx).unwrap() as char;
+                data.push(v);
+            }//v
         }
 
         let phoneme_use: PhonemeUse = rng.gen();
@@ -52,17 +75,19 @@ impl Phoneme {
     }
 }
 
-struct Language {
+pub struct Language {
     general_phonemes: Vec<Phoneme>,
     city_phonemes: Vec<Phoneme>,
-    people_phonemes: Vec<Phoneme>
+    people_phonemes: Vec<Phoneme>,
+    len_gen: Normal
 }
 
 impl Language {
-    fn new(n_phonemes: usize, avg_length: usize) -> Language {
+    pub fn new(n_phonemes: usize, avg_length: f64) -> Language {
         let mut result = Language{general_phonemes: Vec::new(),
             city_phonemes: Vec::new(),
-            people_phonemes: Vec::new()};
+            people_phonemes: Vec::new(),
+            len_gen: Normal::new(avg_length, 1.0)};
 
         for _ in 0..n_phonemes {
             let p = Phoneme::new_rand();
@@ -76,8 +101,84 @@ impl Language {
         result
     }
 
-    fn gen_name() -> String { //only use general phonemes
+    pub fn gen_name(&self) -> String { //only use general phonemes
+        let mut rng = rand::thread_rng();
+        let mut name_len: f64 = self.len_gen.sample(&mut rng);
+        while name_len < 2.0 {
+            name_len = self.len_gen.sample(&mut rng);;
+        }
+        //println!("len: {}, {}", name_len, name_len < 2.0);
 
+        let iname_len: usize = name_len as usize;
+
+        let mut result = String::new();
+        for _ in 0..iname_len {
+            let idx: usize = rng.gen_range(0, self.general_phonemes.len());
+            let phoneme = self.general_phonemes[idx].data.clone();
+            result.push_str(phoneme.as_str());
+        }
+
+        return result;
+    }
+
+    pub fn gen_city_name(&self) -> String { //only use general phonemes
+        let mut rng = rand::thread_rng();
+        let mut name_len: f64 = self.len_gen.sample(&mut rng);
+        while name_len < 2.0 {
+            name_len = self.len_gen.sample(&mut rng);;
+        }
+        //println!("len: {}, {}", name_len, name_len < 2.0);
+
+        let iname_len: usize = name_len as usize;
+
+        let mut result = String::new();
+        for _ in 0..iname_len {
+            let p: f64 = rng.gen();
+
+            let phoneme = if p > 0.7 && self.city_phonemes.len() > 0 {
+                let idx: usize = rng.gen_range(0, self.city_phonemes.len());
+                self.city_phonemes[idx].data.clone()
+            }
+            else
+            {
+
+                let idx: usize = rng.gen_range(0, self.general_phonemes.len());
+                self.general_phonemes[idx].data.clone()
+            };
+            result.push_str(phoneme.as_str());
+        }
+
+        return result;
+    }
+
+    pub fn gen_person_name(&self) -> String { //only use general phonemes
+        let mut rng = rand::thread_rng();
+        let mut name_len: f64 = self.len_gen.sample(&mut rng);
+        while name_len < 2.0 {
+            name_len = self.len_gen.sample(&mut rng);;
+        }
+        //println!("len: {}, {}", name_len, name_len < 2.0);
+
+        let iname_len: usize = name_len as usize;
+
+        let mut result = String::new();
+        for _ in 0..iname_len {
+            let p: f64 = rng.gen();
+
+            let phoneme = if p > 0.7 && self.people_phonemes.len() > 0 {
+                let idx: usize = rng.gen_range(0, self.people_phonemes.len());
+                self.people_phonemes[idx].data.clone()
+            }
+            else
+            {
+
+                let idx: usize = rng.gen_range(0, self.general_phonemes.len());
+                self.general_phonemes[idx].data.clone()
+            };
+            result.push_str(phoneme.as_str());
+        }
+
+        return result;
     }
 }
 

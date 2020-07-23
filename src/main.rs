@@ -17,4 +17,11 @@ fn main() {
     quest.add_goal(delivery.build());
 
     println!("{}", quest.to_string());
+
+    let l = lang::Language::new(15, 3.0);
+    for _ in 0..100 {
+        let name = l.gen_person_name();
+
+        println!("{}", name);
+    }
 }
