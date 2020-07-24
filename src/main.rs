@@ -1,6 +1,8 @@
 mod quest;
 mod quest_data;
 mod lang;
+mod character;
+mod location;
 
 use crate::quest::goal_factory;
 
@@ -18,10 +20,22 @@ fn main() {
 
     println!("{}", quest.to_string());
 
-    let l = lang::Language::new(15, 3.0);
-    for _ in 0..100 {
-        let name = l.gen_person_name();
+    let l = lang::Language::new(30, 3.0);
+    //for _ in 0..100 {
+    //    let name = l.gen_person_name();
 
-        println!("{}", name);
+    //    println!("{}", name);
+    //}
+
+    for _ in 0..100 {
+        let c = character::Character::new(&l);
+        println!("{}", c.to_string());
+    }
+
+    println!("====================");
+
+    for _ in 0..100 {
+        let c = location::Location::new(&l);
+        println!("{}", c.to_string());
     }
 }

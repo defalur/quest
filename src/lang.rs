@@ -34,7 +34,7 @@ impl Phoneme {
 
         let mut data = String::new();
         //structures of phonemes: vc, cv, cvc, v
-        let structure = rng.gen_range(0, 4);
+        let structure = rng.gen_range(0, 3);
         match structure {
             0 => {
                 let idx = rng.gen_range(0, VOWELS.len());
@@ -121,7 +121,7 @@ impl Language {
         return result;
     }
 
-    pub fn gen_city_name(&self) -> String { //only use general phonemes
+    pub fn gen_location_name(&self) -> String { //only use general phonemes
         let mut rng = rand::thread_rng();
         let mut name_len: f64 = self.len_gen.sample(&mut rng);
         while name_len < 2.0 {
