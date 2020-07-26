@@ -7,6 +7,7 @@ mod lang;
 mod character;
 mod location;
 mod item;
+mod mob;
 
 use crate::quest::goal_factory;
 
