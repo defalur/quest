@@ -182,6 +182,34 @@ impl Language {
     }
 }
 
+impl ToString for Language {
+    fn to_string(&self) -> String {
+        let mut result = "Language:\n".to_string();
+        result += "General: ";
+        for p in &self.general_phonemes {
+            result.push_str(p.data.clone().as_str());
+            result.push_str(" ");
+        }
+        result += "\n";
+
+        result += "City: ";
+        for p in &self.city_phonemes {
+            result.push_str(p.data.clone().as_str());
+            result.push_str(" ");
+        }
+        result += "\n";
+
+        result += "People: ";
+        for p in &self.people_phonemes {
+            result.push_str(p.data.clone().as_str());
+            result.push_str(" ");
+        }
+        result += "\n";
+
+        result
+    }
+}
+
 #[cfg(test)]
 mod phoneme_tests {
     use crate::lang;
