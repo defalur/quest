@@ -1,8 +1,12 @@
+#[macro_use]
+extern crate lazy_static;
+
 mod quest;
 mod quest_data;
 mod lang;
 mod character;
 mod location;
+mod item;
 
 use crate::quest::goal_factory;
 
@@ -36,6 +40,13 @@ fn main() {
 
     for _ in 0..100 {
         let c = location::Location::new(&l);
+        println!("{}", c.to_string());
+    }
+
+    println!("====================");
+
+    for _ in 0..100 {
+        let c = item::Item::new_rand();
         println!("{}", c.to_string());
     }
 }
