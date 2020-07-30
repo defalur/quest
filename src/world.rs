@@ -25,6 +25,33 @@ impl World {
 
         World{lang, mobs, locations, characters}
     }
+
+    pub fn rand_character(&self, seed: usize) -> Option<&character::Character> {
+        if self.characters.len() > 0 {
+            Some(&self.characters[seed % self.characters.len()])
+        }
+        else {
+            None
+        }
+    }
+
+    pub fn rand_location(&self, seed: usize) -> Option<&location::Location> {
+        if self.locations.len() > 0 {
+            Some(&self.locations[seed % self.locations.len()])
+        }
+        else {
+            None
+        }
+    }
+
+    pub fn rand_mob(&self, seed: usize) -> Option<&mob::Mob> {
+        if self.mobs.len() > 0 {
+            Some(&self.mobs[seed % self.mobs.len()])
+        }
+        else {
+            None
+        }
+    }
 }
 
 impl ToString for World {

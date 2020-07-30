@@ -19,8 +19,7 @@ lazy_static! {
         ItemType::new("Shield", true, true),
         ItemType::new("Health Potion", false, true),
         ItemType::new("Leather Boots", false, true),
-        ItemType::new("Wizard Hat", false, true),
-        ItemType::new("Letter", false, false)
+        ItemType::new("Wizard Hat", false, true)
     ];
 
     static ref ITEM_MODS: Vec<&'static str> = vec![

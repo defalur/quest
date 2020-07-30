@@ -1,9 +1,20 @@
+use rand::{Rng, distributions::{Distribution, Standard, Normal}};
 use crate::quest_data;
 
 pub enum GoalType {
     FETCH,//fetch an item
     DELIVER,//deliver an item to an npc
     KILL//kill n mobs of a certain type
+}
+
+impl Distribution<GoalType> for Standard {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> GoalType {
+        match rng.gen_range(0, 3) {
+            0 => GoalType::FETCH,
+            1 => GoalType::DELIVER,
+            _ => GoalType::KILL
+        }
+    }
 }
 
 impl ToString for GoalType {
@@ -27,19 +38,23 @@ pub trait Goal: ToString {
 }
 
 pub struct FetchGoal {
+    location: quest_data::QData,
     item: quest_data::QData,
     owner: quest_data::QData//container can be a mob, npc or chest
 }
 
 impl ToString for FetchGoal {
     fn to_string(&self) -> String {
-        "Fetch ".to_string() + &self.item.to_string() + " from " + &self.owner.to_string()
+        "Fetch ".to_string() + &self.item.to_string() + " from " + &self.owner.to_string() + " in "
+            + &self.location.to_string()
     }
 }
 
 impl FetchGoal {
-    pub fn new(item: quest_data::QData, owner: quest_data::QData) -> Box<dyn Goal> {
-        Box::new(FetchGoal{item, owner})
+    pub fn new(item: quest_data::QData,
+               owner: quest_data::QData,
+               location: quest_data::QData) -> Box<dyn Goal> {
+        Box::new(FetchGoal{item, owner, location})
     }
 
 }
@@ -51,18 +66,19 @@ impl Goal for FetchGoal {
 }
 
 pub struct KillGoal {
+    location: quest_data::QData,
     mob: quest_data::QData,
 }
 
 impl ToString for KillGoal {
     fn to_string(&self) -> String {
-        "Kill ".to_string() + &self.mob.to_string()
+        "Kill ".to_string() + &self.mob.to_string() + " in " + &self.location.to_string()
     }
 }
 
 impl KillGoal {
-    pub fn new(mob: quest_data::QData) -> Box<dyn Goal> {
-        Box::new(KillGoal{mob})
+    pub fn new(mob: quest_data::QData, location: quest_data::QData) -> Box<dyn Goal> {
+        Box::new(KillGoal{mob, location})
     }
 }
 
@@ -73,6 +89,7 @@ impl Goal for KillGoal {
 }
 
 pub struct DeliverGoal {
+    location: quest_data::QData,
     item: quest_data::QData,
     target: quest_data::QData
 }
@@ -80,12 +97,15 @@ pub struct DeliverGoal {
 impl ToString for DeliverGoal {
     fn to_string(&self) -> String {
         "Deliver ".to_string() + &self.item.to_string() + " to " + &self.target.to_string()
+            + " in " + &self.location.to_string()
     }
 }
 
 impl DeliverGoal {
-    pub fn new(item: quest_data::QData, target: quest_data::QData) -> Box<dyn Goal> {
-        Box::new(DeliverGoal{item, target})
+    pub fn new(item: quest_data::QData,
+               target: quest_data::QData,
+               location: quest_data::QData) -> Box<dyn Goal> {
+        Box::new(DeliverGoal{item, target, location})
     }
 }
 

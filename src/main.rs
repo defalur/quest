@@ -27,4 +27,10 @@ fn main() {
     let world = world::World::new(10, 10, 20, lang);
 
     println!("{}", world.to_string());
+
+    for _ in 0..10 {
+        let q = quest::create_quest(&world, 3);
+
+        println!("{}", q.to_string());
+    }
 }
