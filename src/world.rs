@@ -1,5 +1,4 @@
 use crate::character;
-use crate::item;
 use crate::location;
 use crate::mob;
 use crate::lang;
@@ -13,13 +12,13 @@ pub struct World {
 
 impl World {
     pub fn new(n_mobs: usize, n_location: usize, n_characters: usize, lang: lang::Language) -> World {
-        let mut mobs: Vec<mob::Mob> = (0..n_mobs)
+        let mobs: Vec<mob::Mob> = (0..n_mobs)
             .map(|_| -> mob::Mob {mob::Mob::new(&lang)})
             .collect();
-        let mut locations: Vec<location::Location> = (0..n_location)
+        let locations: Vec<location::Location> = (0..n_location)
             .map(|_| -> location::Location {location::Location::new(&lang)})
             .collect();
-        let mut characters: Vec<character::Character> = (0..n_characters)
+        let characters: Vec<character::Character> = (0..n_characters)
             .map(|_| -> character::Character {character::Character::new(&lang)})
             .collect();
 

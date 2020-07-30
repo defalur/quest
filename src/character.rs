@@ -1,4 +1,4 @@
-use rand::{Rng, distributions::{Distribution, Standard, Normal}};
+use rand::{Rng, distributions::{Distribution, Standard}};
 use crate::lang;
 
 enum Profession {

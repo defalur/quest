@@ -1,12 +1,9 @@
 use rand::Rng;
 use crate::quest::goal;
-use crate::quest;
 
 use crate::quest_data;
 use crate::world;
 use crate::item;
-use crate::mob;
-use crate::character;
 
 pub struct GoalFactory {
     goal_type: goal::GoalType,
@@ -69,7 +66,7 @@ impl GoalFactory {
 }
 
 fn rand_fetch_goal(world: &world::World, rng: &mut rand::rngs::ThreadRng) -> Box<dyn goal::Goal> {
-    let mut builder = GoalFactory::new(goal::GoalType::FETCH)
+    let builder = GoalFactory::new(goal::GoalType::FETCH)
         .with_item(&item::Item::new_rand().to_string(), rng.gen_range(1, 11))
         .with_location(&world.rand_location(rng.gen()).unwrap().to_string());
 

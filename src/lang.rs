@@ -1,4 +1,5 @@
-use rand::{Rng, distributions::{Distribution, Standard, Normal}};
+use rand::{Rng, distributions::{Distribution, Standard}};
+use rand_distr::Normal;
 
 const CONSONANTS: &'static str = "bcdfghjklmnpqrstvwxz";
 const VOWELS: &'static str = "aeiouy";
@@ -25,10 +26,6 @@ struct Phoneme {
 }
 
 impl Phoneme {
-    fn new(data: &str, usage: PhonemeUse) -> Phoneme {
-        Phoneme{data: data.to_string(), usage}
-    }
-
     fn new_rand() -> Phoneme {
         let mut rng = rand::thread_rng();
 
@@ -79,7 +76,7 @@ pub struct Language {
     general_phonemes: Vec<Phoneme>,
     city_phonemes: Vec<Phoneme>,
     people_phonemes: Vec<Phoneme>,
-    len_gen: Normal
+    len_gen: f64
 }
 
 impl Language {
@@ -87,7 +84,7 @@ impl Language {
         let mut result = Language{general_phonemes: Vec::new(),
             city_phonemes: Vec::new(),
             people_phonemes: Vec::new(),
-            len_gen: Normal::new(avg_length, 1.0)};
+            len_gen: avg_length};
 
         for _ in 0..n_phonemes {
             let p = Phoneme::new_rand();
@@ -102,10 +99,11 @@ impl Language {
     }
 
     pub fn gen_name(&self) -> String { //only use general phonemes
+        let normal = Normal::new(self.len_gen, 1.0).unwrap();
         let mut rng = rand::thread_rng();
-        let mut name_len: f64 = self.len_gen.sample(&mut rng);
+        let mut name_len: f64 = normal.sample(&mut rng);
         while name_len < 2.0 {
-            name_len = self.len_gen.sample(&mut rng);;
+            name_len = normal.sample(&mut rng);
         }
         //println!("len: {}, {}", name_len, name_len < 2.0);
 
@@ -122,10 +120,11 @@ impl Language {
     }
 
     pub fn gen_location_name(&self) -> String { //only use general phonemes
+        let normal = Normal::new(self.len_gen, 1.0).unwrap();
         let mut rng = rand::thread_rng();
-        let mut name_len: f64 = self.len_gen.sample(&mut rng);
+        let mut name_len: f64 = normal.sample(&mut rng);
         while name_len < 2.0 {
-            name_len = self.len_gen.sample(&mut rng);;
+            name_len = normal.sample(&mut rng);
         }
         //println!("len: {}, {}", name_len, name_len < 2.0);
 
@@ -152,10 +151,11 @@ impl Language {
     }
 
     pub fn gen_person_name(&self) -> String { //only use general phonemes
+        let normal = Normal::new(self.len_gen, 1.0).unwrap();
         let mut rng = rand::thread_rng();
-        let mut name_len: f64 = self.len_gen.sample(&mut rng);
+        let mut name_len: f64 = normal.sample(&mut rng);
         while name_len < 2.0 {
-            name_len = self.len_gen.sample(&mut rng);;
+            name_len = normal.sample(&mut rng);
         }
         //println!("len: {}, {}", name_len, name_len < 2.0);
 
